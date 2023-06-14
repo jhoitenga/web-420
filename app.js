@@ -27,6 +27,20 @@ app.use(express.json());
 // Setting the app to use url encoded.
 app.use(express.urlencoded({ extended: true }));
 
+// Setting up the routing for the /api endpoints
+const composersAPI = require('./routes/Hoitenga-composer-routes');
+app.use('/api', composersAPI);
+
+// Connecting to Mongo
+const CONN = 'mongodb+srv://web420_user:s3cr3t@bellevueuniversity.g473hiy.mongodb.net/web420DB';
+
+// Showing Server Connection Messages
+mongoose.connect(CONN).then(() => {
+    console.log('Connection to MongoDB database was successful');
+}).catch(err => {
+    console.log('MongoDB Error: ' + err.message);
+});
+
 // Defining an object literal with named options.
 const options = {
     definition: {

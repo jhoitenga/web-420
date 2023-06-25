@@ -31,17 +31,17 @@ app.use(express.urlencoded({ extended: true }));
 const composersAPI = require('./routes/Hoitenga-composer-routes');
 const personAPI = require('./routes/Hoitenga-person-routes');
 
-app.use('/api', composersAPI);
-app.use('/api', personAPI);
-
 // Connecting to Mongo
 const CONN = 'mongodb+srv://web420_user:s3cr3t@bellevueuniversity.g473hiy.mongodb.net/web420DB';
 
 // Showing Server Connection Messages
 mongoose
-  .connect(CONN)
+  .connect(CONN, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
   .then(() => {
-    console.log('Connection to MongoDB database was successful');
+    console.log('Connection to WEB 420 MongoDB database was successful');
   })
   .catch((err) => {
     console.log('MongoDB Error: ' + err.message);
@@ -64,6 +64,8 @@ const openapiSpecification = swaggerJsdoc(options);
 
 // Wiring openapiSpecification variable to app variable.
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+app.use('/api', composersAPI);
+app.use('/api', personAPI);
 
 // Start the server and make it listen on port 3000.
 app.listen(PORT, () => {

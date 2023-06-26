@@ -22,11 +22,11 @@ const Person = require('../models/Hoitenga-person');
 /**
  * findAllPersons
  * @openapi
- * /api/persons
+ * /api/persons:
  *   get:
  *     tags:
- *       - Persons
- *     description: API for returning an array of person objects.
+ *       - Person
+ *     description: API for returning an array of person objects
  *     summary: returns an array of persons in JSON format.
  *     responses:
  *       '200':

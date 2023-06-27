@@ -61,7 +61,7 @@ router.get('/persons', async (req, res) => {
 /**
  * createPerson
  * @openapi
- * /api/person:
+ * /api/persons:
  *   post:
  *     tags:
  *       - Person
@@ -87,7 +87,7 @@ router.get('/persons', async (req, res) => {
  *         description: MongoDB Exception
  */
 
-router.post('/person', async (req, res) => {
+router.post('/persons', async (req, res) => {
   try {
     const newPerson = {
       firstName: req.body.firstName,

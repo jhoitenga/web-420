@@ -31,6 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 const composersAPI = require('./routes/Hoitenga-composer-routes');
 const personAPI = require('./routes/Hoitenga-person-routes');
 const userAPI = require('./routes/Hoitenga-session-routes');
+const nodeShopperAPI = require('./routes/Hoitenga-node-shopper-routes');
 
 // Connecting to Mongo
 const CONN = 'mongodb+srv://web420_user:s3cr3t@bellevueuniversity.g473hiy.mongodb.net/web420DB';
@@ -68,6 +69,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use('/api', composersAPI);
 app.use('/api', personAPI);
 app.use('/api', userAPI);
+app.use('/api', nodeShopperAPI);
 
 // Start the server and make it listen on port 3000.
 app.listen(PORT, () => {

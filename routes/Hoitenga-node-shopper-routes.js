@@ -80,22 +80,21 @@ router.post('/customers', async (req, res) => {
 });
 
 /**
- *
  * createInvoiceByUserName
  * @openapi
- * /api/customers/{userName}/invoices:
+ * /api/customers/{username}/invoices:
  *   post:
  *     tags:
  *       - Customers
  *     summary: Creates a new invoice.
  *     description: API for creating an invoice by userName.
  *     parameters:
- *       - name: userName
- *         in: path
- *         required: true
- *         description: userName search for collection
+ *       - in: path
+ *         name: username
  *         schema:
  *           type: string
+ *         required: true
+ *         description: userName search for collection
  *     requestBody:
  *       description: Invoice information
  *       content:
@@ -109,66 +108,62 @@ router.post('/customers', async (req, res) => {
  *               - lineItems
  *             properties:
  *               subtotal:
- *                 type: string
+ *                 type: number
  *               tax:
- *                 type: string
+ *                 type: number
  *               dateCreated:
  *                 type: string
  *               dateShipped:
  *                 type: string
  *               lineItems:
  *                 type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   name:
- *                     type: string
- *                   price:
- *                     type: number
- *                   quantity:
- *                     type: number
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     price:
+ *                       type: number
+ *                     quantity:
+ *                       type: number
  *     responses:
  *       '200':
  *         description: Invoice created successfully.
  *       '500':
  *         description: Server Exception.
  *       '501':
- *         description: MongoDB Exception
- *
+ *         description: MongoDB Exception.
  */
-
-router.post('/customers/:userName/invoices', async (req, res) => {
+router.post('/customers/:username/invoices', async (req, res) => {
   try {
-    Customer.findOne({ userName: req.params.userName }, function (err, customer) {
-      let newInvoice = {
-        subtotal: req.body.subtotal,
-        tax: req.body.tax,
-        dateCreated: req.body.dateCreated,
-        dateShipped: req.body.dateShipped,
-        lineItems: req.body.lineItems,
-      };
-      if (err) {
-        console.log(err);
-        res.status(501).send({
-          message: `MongoDB Exception: ${err}`,
-        });
-      } else {
-        console.log(customer);
-        customer.invoices.push(newInvoice);
-        customer.save(function (err, invoice) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(invoice);
-            res.json(invoice);
-          }
-        });
-      }
+    const newInvoice = {
+      subtotal: req.body.subtotal,
+      tax: req.body.tax,
+      dateCreated: req.body.dateCreated,
+      dateShipped: req.body.dateShipped,
+      lineItems: req.body.lineItems,
+    };
+
+    const customer = await Customer.findOne({ userName: req.params.username });
+
+    if (customer.invoices == null) {
+      customer.invoices = [newInvoice];
+    } else {
+      customer.invoices.push(newInvoice);
+    }
+
+    await customer.save();
+    console.log('Invoice added to MongoDB.');
+    console.log(customer);
+
+    res.status(200).send({
+      message: `Invoice added to MongoDB.`,
+      customer: customer,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    console.log(e);
     res.status(500).send({
-      message: `Server Exception: ${error.message}`,
+      message: `Server Exception: ${e.message}`,
     });
   }
 });
